@@ -57,12 +57,11 @@ import sys
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import LinearRegression
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import cross_val_score
 from sklearn import preprocessing
 from sklearn.preprocessing import LabelEncoder
 import pickle
-
-# decode input(s)
 
 df = pd.read_csv('titanic/raw data/train.csv', sep=',',header=0).dropna(subset=['Pclass', 'Sex', 'Age', 'SibSp', 'Parch','Fare', 'Embarked', 'Survived'])
 
@@ -81,16 +80,28 @@ regModel.fit(features,survived)
 
 
 # Validate Model
-scores = cross_val_score(regModel, features, survived, cv=3)
-avgAcc = np.mean(scores)
-print(avgAcc)
+scores_LinRegression = cross_val_score(regModel, features, survived, cv=3)
+avgAcc_LinRegression = np.mean(scores)
+print(avgAcc_LinRegression)
 
 # Save Model
 mdl = pickle.dumps(regModel)
-with open('titanic_LogRegression.pickle', 'wb') as handle:
+with open('titanic_LinRegression.pickle', 'wb') as handle:
 	pickle.dump(mdl, handle)
-  
 
+# Try another model with Decision tree
 
+tree = DecisionTreeClassifier(max_depth=5, random_state=17)
+tree.fit(features, survived)
+
+# Validate Model
+scores_DecisionTree = cross_val_score(regModel, features, survived, cv=3)
+avgAcc_DecisionTree = np.mean(scores)
+print(avgAcc_DecisionTree)
+
+# Save Model
+mdl = pickle.dumps(regModel)
+with open('titanic_DecisionTree.pickle', 'wb') as handle:
+	pickle.dump(mdl, handle)
 
 
