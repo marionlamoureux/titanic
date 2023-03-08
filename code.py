@@ -43,7 +43,7 @@ path = 'titanic/raw data/train.csv'
 titanic_data = spark.read.csv(path, header=True, sep=",", nullValue="NA")
 
 # ...and push csv into hive table
-titanic_data.write.saveAsTable("titanic.titanic_train")
+# titanic_data.write.saveAsTable("titanic.titanic_train")
 
 # Step 2 - Build the model
 # On the training data, create a logistic regression model
@@ -75,6 +75,7 @@ df['Encoded_Embarked'] = LabelEncoder().fit_transform(df.Embarked)
 features = df[[ 'Pclass', 'Encoded_Sex', 'Age', 'SibSp', 'Parch','Fare', 'Encoded_Embarked']]
 survived = df[['Survived']]
 
+features.head(10)
 regModel = LinearRegression()
 regModel.fit(features,survived)
 
@@ -104,4 +105,34 @@ mdl = pickle.dumps(regModel)
 with open('titanic_DecisionTree.pickle', 'wb') as handle:
 	pickle.dump(mdl, handle)
 
+args = {
+  "Pclass": "2",
+  "Encoded_Sex": "0",
+  "Age": "25.0",
+  "SibSp": "1",
+  "Parch": "0",
+  "Fare": "7.9250",
+  "Encoded_Embarked": "2"
+}
 
+features = [ 'Pclass', 'Encoded_Sex', 'Age', 'SibSp', 'Parch','Fare', 'Encoded_Embarked']
+
+# == Main Function ==
+def PredictFunc(args):
+	# Load Data
+	filtArgs = {key: [args[key]] for key in features}
+	data = pd.DataFrame.from_dict(filtArgs)
+
+	# Load Model
+	with open('titanic_DecisionTree.pickle', 'rb') as handle:
+		mdl = pickle.load(handle)
+	model = pickle.loads(mdl)
+
+	# Get Prediction
+	prediction = model.predict(data)
+
+	# Return Prediction
+	return prediction
+
+
+PredictFunc(args)

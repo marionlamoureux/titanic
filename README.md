@@ -1,4 +1,4 @@
-# titanic
+# Titanic
 This is inspired by Kaggle challenge Titanic
 https://www.kaggle.com/competitions/titanic
 
