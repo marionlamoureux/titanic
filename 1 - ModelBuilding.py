@@ -22,30 +22,21 @@ df = pd.read_csv('raw data/train.csv', sep=',',header=0).dropna(subset=['Pclass'
 df['Encoded_Sex'] = LabelEncoder().fit_transform(df.Sex)
 df['Encoded_Embarked'] = LabelEncoder().fit_transform(df.Embarked)
 
+# Select the features
 features = df[[ 'Pclass', 'Encoded_Sex', 'Age', 'SibSp', 'Parch','Fare', 'Encoded_Embarked']]
 survived = df[['Survived']]
 
-features.head(10)
+# Build the model as a linear regression
 regModel = LinearRegression()
 regModel.fit(features,survived)
 
 
-# Save Model
+# Save Model as a pickle file
 mdl = pickle.dumps(regModel)
 with open('titanic_LinRegression.pickle', 'wb') as handle:
 	pickle.dump(mdl, handle)
 
-
-args = {
-  "Pclass": "2",
-  "Encoded_Sex": "0",
-  "Age": "25.0",
-  "SibSp": "1",
-  "Parch": "0",
-  "Fare": "7.9250",
-  "Encoded_Embarked": "2"
-}
-
+# Create the function for the model
 features = [ 'Pclass', 'Encoded_Sex', 'Age', 'SibSp', 'Parch','Fare', 'Encoded_Embarked']
 
 # == Main Function ==
